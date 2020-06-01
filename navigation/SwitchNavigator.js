@@ -1,28 +1,73 @@
-import React from 'react'
-import { createSwitchNavigator, createAppContainer } from 'react-navigation'
-import Login from '../screens/Login'
-import Signup from '../screens/Signup'
-import Profile from '../screens/Profile'
-import Loading from '../screens/Loading'
+import React from "react";
+import { createSwitchNavigator, createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import Login from "../screens/Login";
+import Signup from "../screens/Signup";
+import Profile from "../screens/Profile";
+import Loading from "../screens/Loading";
 
-const SwitchNavigator = createSwitchNavigator(
+const AppContainer = createStackNavigator({
+  App: createBottomTabNavigator(
     {
-        Login: {
-            screen: Login
+      Profile: {
+        screen: Profile,
+        navigationOptions: {
+          tabBarIcon: ({ tintColor,  }) => (
+            <Ionicons name="ios-person" size={24} color={tintColor}></Ionicons>
+          ),
+          title: "Profil",
         },
-        Signup: {
-            screen: Signup
+      },
+      NewRun: {
+        screen: Profile,
+        navigationOptions: {
+          tabBarIcon: ({ tintColor }) => (
+            <Ionicons name="ios-add" size={24} color={tintColor}></Ionicons>
+          ),
+          title: "Dodaj bieg",
         },
-        Profile: {
-            screen: Profile
-        },
-        Loading: {
-            screen: Loading
-        }
+      },
     },
     {
-        initialRouteName: 'Loading'
+      tabBarOptions: {
+        activeTintColor: "#000066",
+        inactiveTintColor: "#B8BBC4",
+      },
+      navigationOptions: {
+        headerShown: false,
+      },
     }
-)
+  ),
+});
 
-export default createAppContainer(SwitchNavigator)
+const AuthStack = createStackNavigator(
+  {
+    Signup: {
+      screen: Signup,
+    },
+    Login: {
+      screen: Login,
+    },
+  },
+  {
+    initialRouteParams: "Profile",
+    headerMode: 'none',
+  }
+);
+
+
+
+export default createAppContainer(
+  createSwitchNavigator(
+    {
+      Loading: Loading,
+      App: AppContainer,
+      Auth: AuthStack,
+    },
+    {
+      initialRouteName: "Loading",
+    }
+  )
+);
