@@ -2,50 +2,56 @@ import React from "react";
 import { View, Text, StyleSheet, Button, FlatList } from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { addRun, getRuns } from "../actions/user";
+import { addRun, fetchRuns } from "../actions/user";
 
 class ShowRuns extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { data: [] };
+    this.state = { error: null, runs: [], loading: true };
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     this.didFocusListener = this.props.navigation.addListener(
       "didFocus",
+
       async () => {
+        this.state.loading = true;
         //Load data when focus on screen;
-        await this.props.getRuns(this.props.user.uid);
-        this.setState({ data: this.props.user.runs });
-        console.log(this.state.data);
+        await this.props.fetchRuns(this.props.user.uid);
+        this.setState({
+          error: this.props.error,
+          runs: this.props.runs,
+          loading: this.props.loading,
+        });
       }
     );
   }
 
-  componentWillUnmount() {
-    this.didFocusListener.remove();
-  }
-
   render() {
-    if (this.state.data == undefined) {
+    if (this.state.error) {
       return (
-        <View>
-          <Text>>Brak biegów</Text>
+        <View style={styles.container}>
+          <Text>Błąd {this.state.error.message}</Text>
         </View>
       );
     }
 
-    const postItems = this.state.data.map((post) => (
-      <View key={post.name}>
-        <Text>{post.name}</Text>
-        <Text>{post.where}</Text>
-      </View>
-    ));
+    if (this.state.loading) {
+      return (
+        <View style={styles.container}>
+          <Text>Loading...</Text>
+        </View>
+      );
+    }
 
     return (
       <View style={styles.container}>
         <Text>Show runs</Text>
-        {postItems}
+        {this.state.runs.map((el) => (
+          <Text>
+            {el.name}: {el.where}
+          </Text>
+        ))}
       </View>
     );
   }
@@ -61,12 +67,15 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ addRun, getRuns }, dispatch);
+  return bindActionCreators({ addRun, fetchRuns }, dispatch);
 };
 
 const mapStateToProps = (state) => {
   return {
     user: state.user,
+    runs: state.user.items,
+    loading: state.user.loading,
+    error: state.user.error,
   };
 };
 

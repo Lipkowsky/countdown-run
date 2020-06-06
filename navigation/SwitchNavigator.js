@@ -38,7 +38,7 @@ const AppContainer = createStackNavigator({
           tabBarIcon: ({ tintColor,  }) => (
             <Ionicons name="ios-person" size={24} color={tintColor}></Ionicons>
           ),
-          title: "Pokaz Biegi",
+          title: "Pokaż Biegi",
         },
       },
     },
