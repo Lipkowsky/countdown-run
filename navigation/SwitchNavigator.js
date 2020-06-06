@@ -7,6 +7,8 @@ import Login from "../screens/Login";
 import Signup from "../screens/Signup";
 import Profile from "../screens/Profile";
 import Loading from "../screens/Loading";
+import AddRun from "../screens/AddRun";
+import ShowRuns from "../screens/ShowRuns";
 
 const AppContainer = createStackNavigator({
   App: createBottomTabNavigator(
@@ -21,12 +23,22 @@ const AppContainer = createStackNavigator({
         },
       },
       NewRun: {
-        screen: Profile,
+        screen: AddRun,
         navigationOptions: {
           tabBarIcon: ({ tintColor }) => (
             <Ionicons name="ios-add" size={24} color={tintColor}></Ionicons>
           ),
           title: "Dodaj bieg",
+        },
+        
+      },
+      ShowRuns: {
+        screen: ShowRuns,
+        navigationOptions: {
+          tabBarIcon: ({ tintColor,  }) => (
+            <Ionicons name="ios-person" size={24} color={tintColor}></Ionicons>
+          ),
+          title: "Pokaz Biegi",
         },
       },
     },
